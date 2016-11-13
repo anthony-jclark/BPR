@@ -54,7 +54,7 @@ var line = d3.line()
     // .x(function(d) { return x(d.date); })
     // .y(function(d) { return y(d.close); });
 
-d3.json("/scraper/2016-2017_games.json", function(data) {
+d3.json("scraper/2016-2017_games.json", function(data) {
     x.domain(d3.extent(data.data, function(d) { return parseTime(d.date); }));
     y.domain([0, 100]);
 
