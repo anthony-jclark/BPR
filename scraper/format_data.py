@@ -69,12 +69,12 @@ def formatData(gamedata, season):
         datedata.append(todaydata)
 
     assert len(teams) == num_teams
-    ds = (date_start.year, date_start.month, date_start.day)
-    de = (date_end.year, date_end.month, date_end.day)
+    # ds = (date_start.year, date_start.month, date_start.day)
+    # de = (date_end.year, date_end.month, date_end.day)
 
     return {
-        "start_date": ds,
-        "end_date": de,
+        "first_date": str(date_start),
+        "last_date": str(date_end),
         "teams": list(teams),
         "season": season,
         "data": datedata}

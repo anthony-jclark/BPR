@@ -34,28 +34,32 @@
 <svg width="960" height="500"></svg>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script type="text/javascript">
-var svg = d3.select("svg"),
+let svg = d3.select("svg"),
     margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = +svg.attr("width") - margin.left - margin.right,
     height = +svg.attr("height") - margin.top - margin.bottom,
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," +margin.top + ")");
 
-var parseTime = d3.timeParse("%Y-%m-%d");
+let parseTime = d3.timeParse("%Y-%m-%d");
 
-var x = d3.scaleTime()
+let x = d3.scaleTime()
     .rangeRound([0, width]);
 
-var y = d3.scaleLinear()
+let y = d3.scaleLinear()
     .rangeRound([height, 0]);
 
-var line = d3.line()
+let line = d3.line()
     .x(function(d) { return x(d[0]); })
     .y(function(d) { return y(d[1]); });
     // .x(function(d) { return x(d.date); })
     // .y(function(d) { return y(d.close); });
 
 d3.json("scraper/2016-2017_games.json", function(data) {
-    x.domain(d3.extent(data.data, function(d) { return parseTime(d.date); }));
+
+    const start_day = d3.timeDay.offset(parseTime(data.first_date), -1);
+    const end_day = parseTime(data.last_date);
+
+    x.domain([start_day, end_day]);
     y.domain([0, 100]);
 
     g.append("g")
@@ -74,35 +78,32 @@ d3.json("scraper/2016-2017_games.json", function(data) {
         .style("text-anchor", "end")
         .text("Points");
 
-    var detdata = [];
-    for (var day = 0; day < data.data.length; ++day) {
-        for (var game = 0; game < data.data[day].results.length; ++game) {
-            if (data.data[day].results[game][0] === "DET") {
-                var gamedate = parseTime(data.data[day].date);
-                var gamereslt = 2;
-                var res = data.data[day].results[game][1];
-                if (res === "LOS") {
-                    gamereslt = 0;
-                } else if (res === "OTL" || res === "SOL") {
-                    gamereslt = 1;
-                }
-                var prev = detdata.length > 0 ? detdata[detdata.length - 1][1] : 0;
-                detdata.push([gamedate, +gamereslt + prev]);
-            }
+    const outcomes = {
+        "WIN": 2, "OTW": 2, "SOW": 2, "SOL": 1, "OTL": 1, "LOS": 0
+    };
+
+    let teamdata = {};
+    for (const team of data.teams) {
+        teamdata[team] = [[start_day, 0]];
+    }
+
+    for (const di of data.data) {
+        let day = parseTime(di.date);
+        for (const game of di.results) {
+            let [team, result] = game;
+            let prevresult = teamdata[team][teamdata[team].length - 1][1];
+            teamdata[team].push([day, +outcomes[result] + prevresult]);
         }
     }
 
-    console.log(detdata);
-
-    g.append("path")
-        .datum(detdata)
-        .attr("class", "line")
-        .attr("d", line);
+    for (const team of data.teams) {
+        g.append("path")
+            .datum(teamdata[team])
+            .attr("class", "line")
+            .attr("d", line);
+    }
 });
 </script>
-
-
-
 
 
 
