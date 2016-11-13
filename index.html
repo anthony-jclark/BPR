@@ -22,16 +22,34 @@
 
 <style>
     .axis--x path {
-      display: none;
+        display: none;
     }
 
     .line {
-      fill: none;
-      stroke: steelblue;
-      stroke-width: 1.5px;
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+
+    #svg-container {
+        width: 100%;
+        padding: 1rem 0rem;
+    }
+
+    #plot {
+        border: 1px solid #CCC;
+        margin: auto;
+        display: block;
+        -webkit-box-shadow: 5px 5px 8px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: 5px 5px 8px 0px rgba(0,0,0,0.75);
+        box-shadow: 5px 5px 8px 0px rgba(0,0,0,0.75);
     }
 </style>
-<svg width="960" height="500"></svg>
+
+<div id="svg-container">
+    <svg id="plot" width="960" height="500"></svg>
+</div>
+
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script type="text/javascript">
 let svg = d3.select("svg"),
@@ -51,8 +69,6 @@ let y = d3.scaleLinear()
 let line = d3.line()
     .x(function(d) { return x(d[0]); })
     .y(function(d) { return y(d[1]); });
-    // .x(function(d) { return x(d.date); })
-    // .y(function(d) { return y(d.close); });
 
 d3.json("scraper/2016-2017_games.json", function(data) {
 
