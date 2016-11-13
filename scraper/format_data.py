@@ -1,4 +1,4 @@
-#!./.env/bin/python
+#!../../.env/bin/python
 
 import pickle
 import os
@@ -46,7 +46,8 @@ def formatData(gamedata, season):
 
     g = 0
     for d in daterange(date_start, date_end + timedelta(1)):
-        todaydata = {"date": (d.year, d.month, d.day), "results": []}
+        datestr = "{}-{:0>2}-{:0>2}".format(d.year, d.month, d.day)
+        todaydata = {"date": datestr, "results": []}
         while g < len(gamedata) and gamedata[g]["date"] == d:
             game = gamedata[g]
             winner, loser = game["winner"], game["loser"]
