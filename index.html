@@ -21,14 +21,110 @@
 
 
 <style>
+    .ANA-color1 { stroke: #F57D31; }
+    .ANA-color2 { stroke: #B6985A; }
+
+    .ARI-color1 { stroke: #98012E; }
+    .ARI-color2 { stroke: #EEE3C7; }
+
+    .BOS-color1 { stroke: #FDB930; }
+    .BOS-color2 { stroke: #000000; }
+
+    .BUF-color1 { stroke: #002D62; }
+    .BUF-color2 { stroke: #FDB930; }
+
+    .CAR-color1 { stroke: #E51A38; }
+    .CAR-color2 { stroke: #FFFFFF; }
+
+    .CBJ-color1 { stroke: #002147; }
+    .CBJ-color2 { stroke: #C60C30; }
+
+    .CGY-color1 { stroke: #CB0D0D; }
+    .CGY-color2 { stroke: #FDBF12; }
+
+    .CHI-color1 { stroke: #C60C30; }
+    .CHI-color2 { stroke: #000000; }
+
+    .COL-color1 { stroke: #822433; }
+    .COL-color2 { stroke: #165788; }
+
+    .DAL-color1 { stroke: #016F4A; }
+    .DAL-color2 { stroke: #A7A8AC; }
+
+    .DET-color1 { stroke: #E51837; }
+    .DET-color2 { stroke: #FFFFFF; }
+
+    .EDM-color1 { stroke: #013E7F; }
+    .EDM-color2 { stroke: #EB6E1E; }
+
+    .FLA-color1 { stroke: #C51230; }
+    .FLA-color2 { stroke: #002D62; }
+
+    .LA-color1 { stroke: #000000; }
+    .LA-color2 { stroke: #B2B7BB; }
+
+    .MIN-color1 { stroke: #C51230; }
+    .MIN-color2 { stroke: #004F30; }
+
+    .MTL-color1 { stroke: #C51230; }
+    .MTL-color2 { stroke: #083A81; }
+
+    .NJ-color1 { stroke: #E03A3E; }
+    .NJ-color2 { stroke: #000000; }
+
+    .NSH-color1 { stroke: #FDBB30; }
+    .NSH-color2 { stroke: #002D62; }
+
+    .NYI-color1 { stroke: #F57D31; }
+    .NYI-color2 { stroke: #00529B; }
+
+    .NYR-color1 { stroke: #E51837; }
+    .NYR-color2 { stroke: #0161AB; }
+
+    .OTT-color1 { stroke: #E51837; }
+    .OTT-color2 { stroke: #D4A00F; }
+
+    .PHI-color1 { stroke: #F4793E; }
+    .PHI-color2 { stroke: #000000; }
+
+    .PIT-color1 { stroke: #C5B358; }
+    .PIT-color2 { stroke: #000000; }
+
+    .SJ-color1 { stroke: #007889; }
+    .SJ-color2 { stroke: #F4901E; }
+
+    .STL-color1 { stroke: #00529C; }
+    .STL-color2 { stroke: #FDB930; }
+
+    .TB-color1 { stroke: #003D7C; }
+    .TB-color2 { stroke: #FFFFFF; }
+
+    .TOR-color1 { stroke: #003D7C; }
+    .TOR-color2 { stroke: #FFFFFF; }
+
+    .VAN-color1 { stroke: #003E7E; }
+    .VAN-color2 { stroke: #008852; }
+
+    .WPG-color1 { stroke: #002D62; }
+    .WPG-color2 { stroke: #006EC8; }
+
+    .WS-color1 { stroke: #002147; }
+    .WS-color2 { stroke: #C60C30; }
+
     .axis--x path {
         display: none;
     }
 
     .line {
         fill: none;
-        stroke: steelblue;
+        /*stroke: steelblue;*/
         stroke-width: 1.5px;
+    }
+
+    .blash-line {
+        stroke-dasharray: 5 5;
+        stroke-width: 5px;
+        stroke: black;
     }
 
     #svg-container {
@@ -76,7 +172,7 @@ d3.json("scraper/2016-2017_games.json", function(data) {
     const end_day = parseTime(data.last_date);
 
     x.domain([start_day, end_day]);
-    y.domain([0, 100]);
+    y.domain([0, 30]);
 
     g.append("g")
         .attr("class", "axis axis--x")
@@ -115,9 +211,24 @@ d3.json("scraper/2016-2017_games.json", function(data) {
     for (const team of data.teams) {
         g.append("path")
             .datum(teamdata[team])
-            .attr("class", "line")
-            .attr("d", line);
+            .attr("class", "line " + team + "-color1")
+            .attr("d", line)
+            .on("mouseover", function(d) {
+                d3.select(this)
+                    .style("stroke-width", '6px');
+            })
+            .on("mouseout", function(d) {
+                d3.select(this)
+                    .style("stroke-width", '1.5px');
+            });
     }
+
+    // Blashill line
+    let gamecnt = teamdata["DET"].length;
+    g.append("path")
+        .datum([[start_day, 0], [end_day, +gamecnt * 2 * 0.6]])
+        .attr("class", "line blash-line")
+        .attr("d", line);
 });
 </script>
 
