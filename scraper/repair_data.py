@@ -1,4 +1,3 @@
-#!./.env/bin/python
 
 import os
 import pickle
@@ -16,11 +15,11 @@ def analyzeAndRepair(gamedata):
     for game in gamedata["games"]:
         while game["number"] != game_num:
             print "Found a missing game number: ", game_num
-            print "Here are previous 10 games:"
-            for g in gamedata["games"][game_num - 10 - 1:game_num - 1]:
+            print "Here are previous 15 games:"
+            for g in gamedata["games"][game_num - 15 - 1:game_num - 1]:
                 printGame(g)
-            print "And here are the next 10 games:"
-            for g in gamedata["games"][game_num - 1:game_num + 10 - 1]:
+            print "And here are the next 15 games:"
+            for g in gamedata["games"][game_num - 1:game_num + 15 - 1]:
                 printGame(g)
 
             new_game = {"number": game_num}
